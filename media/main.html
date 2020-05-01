@@ -1,0 +1,226 @@
+<html>
+
+<head lang="ja">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+
+<body>
+    <nav>
+        <div id="nav-container">
+            <div class="slider">
+                <span class="label">+</span>
+                <input type="range" id="input-nummag" value=1 min=1 max=10 step=0.1>
+                <span class="label">-</span>
+            </div>
+            <div class="slider">
+                <span class="label" id="indicator-numcol">0</span>
+                <input type="range" id="input-numcol" value=6 min=1 max=20 step=1>
+            </div>
+            <div class="text-input">
+                <input type="search" id="input-query" value="" placeholder="search query">
+            </div>
+        </div>
+    </nav>
+    <div id="main">
+        <div id='container'>
+            ${content}
+        </div>
+    </div>
+    <script type="text/javascript">
+        let button = { "+": document.getElementById("up"), "-": document.getElementById("down") };
+        let field = document.getElementById("container");
+        const elem_numcol = document.getElementById("input-numcol");
+        const elem_nummag = document.getElementById("input-nummag");
+        const elem_query = document.getElementById("input-query");
+        const img_elems = document.querySelectorAll("div#container img");
+        const elem_col_indicator = document.getElementById("indicator-numcol");
+        const vscode = acquireVsCodeApi();
+
+        const get_margin = () => parseInt(window.getComputedStyle(field).gridColumnGap.slice(0, -2));
+        const get_cell_width = () => parseInt(window.getComputedStyle(field).gridAutoRows.slice(0, -2));
+        const get_col_num = () => elem_numcol.value;
+        const get_magnitude = () => elem_nummag.value;
+        const get_query = () => elem_query.value;
+
+        const basename = (path) => path.split('/').pop().split('.').shift();
+
+        const changeView = () => {
+            field.style.gridAutoRows = (get_magnitude() * 100) + "px";
+            field.style.gridTemplateColumns = "repeat(auto-fill, " + (get_magnitude() * 100) + "px)";
+            field.style.width = (get_col_num() * get_cell_width() + (get_col_num() - 1) * get_margin()) + "px";
+            elem_col_indicator.textContent = get_col_num()
+        };
+
+        const updateFiles = () => {
+            const divs = document.querySelectorAll("#container > div");
+            const reg = new RegExp(get_query());
+            divs.forEach(elem => {
+                const img_elem = elem.firstElementChild;
+                const name = basename(img_elem.src);
+                if (name.match(reg)) elem.style.display = 'block';
+                else elem.style.display = 'None';
+            });
+        }
+
+        elem_numcol.addEventListener("input", function () {
+            changeView();
+        });
+        elem_nummag.addEventListener("input", function () {
+            changeView();
+        });
+        elem_query.addEventListener("input", function () {
+            updateFiles();
+        });
+        img_elems.forEach((elem) => {
+            elem.addEventListener("click", () => {
+                vscode.postMessage({
+                    command: 'openImage',
+                    src: elem.src
+                });
+            });
+        });
+
+        changeView();
+    </script>
+    <style type="text/css">
+        body {
+            position: fixed;
+            overflow: hidden;
+            left: 0px;
+            top: 0px;
+            right: 0px;
+            bottom: 0px;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        nav {
+            /* position: fixed; */
+            height: 8%;
+            margin: 1% 20%;
+        }
+
+        div#nav-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-row-gap: 10px;
+            grid-column-gap: 30px;
+            height: 100%;
+        }
+
+        div#nav-container>div {
+            align-content: center;
+            align-self: center;
+            text-align: center;
+        }
+
+        div.slider {
+            display: grid;
+            grid-template-columns: 20px 1fr 20px;
+            grid-column-gap: 10px;
+        }
+
+        div#main {
+            top: 10%;
+            margin: 5%;
+            height: 80%;
+            text-align: -webkit-center;
+            overflow: auto;
+        }
+
+        div#container {
+            display: grid;
+            grid-auto-rows: 100px;
+            grid-template-columns: repeat(auto-fill, 100px);
+            text-align: center;
+            align-items: center;
+            grid-row-gap: 10px;
+            grid-column-gap: 10px;
+            width: 650px;
+        }
+
+        .label {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 700;
+            font-size: large;
+        }
+
+        img {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
+            cursor: pointer;
+        }
+
+        img:hover {
+            filter: opacity(0.8);
+            transition: filter 0.4s cubic-bezier(0, 2.5, 0.2, 2.5);
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            border-left: solid 0px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var();
+            border-radius: 10px;
+            box-shadow: inset 0 0 0 2px var(--vscode-editor-background);
+        }
+
+        ::-webkit-scrollbar-corner {
+            background: var(--vscode-editor-background);
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 0px;
+            width: 100%;
+            align-items: center;
+            align-self: center;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            cursor: pointer;
+            width: 12px;
+            height: 12px;
+            background: var(--vscode-editor-foreground);
+            margin-top: -5px;
+            border-radius: 50%;
+        }
+
+        input[type="range"]::-webkit-slider-runnable-track {
+            height: 2px;
+            padding: 0px;
+            background: var(--vscode-editor-foreground);
+        }
+
+        input[type="range"]:focus {
+            outline: none;
+        }
+
+        input[type="search"] {
+            -webkit-appearance: none;
+            color: var(--vscode-editor-foreground);
+            background: var(--vscodeeditor-background);
+            border: 0px;
+            border-bottom: 1px solid var(--vscode-editor-foreground);
+            width: 100%;
+            font-size: medium;
+        }
+
+        input[type="search"]:focus {
+            outline: none;
+        }
+    </style>
+</body>
+
+</html>
