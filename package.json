@@ -2,7 +2,23 @@
 	"name": "image-tile-viewer",
 	"displayName": "Image Tile Viewer",
 	"description": "extension for showing images in tile view.",
-	"version": "0.0.1",
+	"icon": "media/icon.png",
+	"version": "0.1.0",
+	"author": {
+		"name": "ayatough",
+		"email": "modest.simple.life@gmail.com"
+	},
+	"keywords": [
+		"image"
+	],
+	"homepage": "https://github.com/ayatough/vscode-image-tile-viewer",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ayatough/vscode-image-tile-viewer"
+	},
+	"bugs": {
+		"url": "https://github.com/ayatough/vscode-image-tile-viewer/issues"
+	},
 	"engines": {
 		"vscode": "^1.44.0"
 	},
