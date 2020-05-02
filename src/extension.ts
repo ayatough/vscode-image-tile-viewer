@@ -7,8 +7,10 @@ export function activate(context: vscode.ExtensionContext) {
 	const html_path = path.join(context.extensionPath, "media", "main.html");
 
 	let disposable = vscode.commands.registerCommand('image-tile-viewer.open', () => {
+		
 		vscode.window.showOpenDialog({
-			canSelectFolders: true
+			canSelectFolders: true,
+			defaultUri: vscode.workspace.workspaceFolders === undefined ? undefined : vscode.workspace.workspaceFolders[0].uri
 		}).then(dir_uri => {
 			if (dir_uri && dir_uri[0]) {
 				const dir_path = dir_uri[0].fsPath;
