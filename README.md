@@ -1,10 +1,10 @@
 # image-tile-viewer
 
-![icon](media/icon.png)
+![icon](https://github.com/ayatough/vscode-image-tile-viewer/raw/master/media/icon.png)
 
 This is vscoded extension for showing images in tile view.
 
-![demo](media/demo.gif)
+![demo](https://github.com/ayatough/vscode-image-tile-viewer/raw/master/media/demo.gif)
 
 ## Features
 

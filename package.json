@@ -3,7 +3,8 @@
 	"displayName": "Image Tile Viewer",
 	"description": "extension for showing images in tile view.",
 	"icon": "media/icon.png",
-	"version": "0.1.0",
+	"version": "0.1.1",
+	"publisher": "ayatough",
 	"author": {
 		"name": "ayatough",
 		"email": "modest.simple.life@gmail.com"
