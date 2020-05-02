@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [0.1.1] - 2020-05-02
+
+Fix descriptions.
+
 ## [0.1.0] - 2020-05-02
 
 Initial release.
