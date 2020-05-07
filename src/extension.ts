@@ -5,6 +5,7 @@ import * as path from 'path';
 export function activate(context: vscode.ExtensionContext) {
 
 	const html_path = path.join(context.extensionPath, "media", "main.html");
+	const image_format_list = [".jpeg", ".jpg", ".jpe", ".png", ".bmp", ".gif", ".webp"]
 
 	let disposable = vscode.commands.registerCommand('image-tile-viewer.open', () => {
 		
@@ -32,7 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
 					// extract img files
 					let file_names: string[] = []
 					dirents.forEach((file: fs.Dirent) => {
-						if ([".jpeg", ".jpg", ".png"].includes(path.extname(file.name).toLocaleLowerCase())) file_names.push(file.name);
+						if (image_format_list.includes(path.extname(file.name).toLocaleLowerCase())) file_names.push(file.name);
 					});
 
 					// make insert img DOM string
