@@ -10,9 +10,9 @@
     <nav>
         <div id="nav-container">
             <div class="slider">
-                <span class="label">+</span>
-                <input type="range" id="input-nummag" value=1 min=1 max=10 step=0.1>
                 <span class="label">-</span>
+                <input type="range" id="input-nummag" value=1 min=1 max=10 step=0.1>
+                <span class="label">+</span>
             </div>
             <div class="slider">
                 <span class="label" id="indicator-numcol">0</span>
@@ -44,7 +44,7 @@
         const get_magnitude = () => elem_nummag.value;
         const get_query = () => elem_query.value;
 
-        const basename = (path) => path.split('/').pop().split('.').shift();
+        const filename = (path) => path.split('/').pop();
 
         const changeView = () => {
             field.style.gridAutoRows = (get_magnitude() * 100) + "px";
@@ -58,7 +58,7 @@
             const reg = new RegExp(get_query());
             divs.forEach(elem => {
                 const img_elem = elem.firstElementChild;
-                const name = basename(img_elem.src);
+                const name = filename(img_elem.src);
                 if (name.match(reg)) elem.style.display = 'block';
                 else elem.style.display = 'None';
             });
