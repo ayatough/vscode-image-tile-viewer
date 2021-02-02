@@ -2,6 +2,26 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 
+const IS_WIN = process.platform === "win32";
+const IS_MAC = process.platform === "darwin";
+const IS_LINUX = process.platform === "linux";
+const residue_prefix : string = IS_WIN ? "\\file\\\\" : IS_MAC || IS_LINUX ? "/file//" : "";
+
+// "" -> ""
+function get_clean_path(path: string) : string {
+	const parsed_path = vscode.Uri.parse(path, false).fsPath;  // remove "://"
+	const residue_pos = parsed_path.indexOf(residue_prefix);  // remove "/file/" here
+	const len = residue_prefix.length;
+	if (residue_pos != 0)
+	{
+		return parsed_path;
+	}
+	else
+	{
+		return parsed_path.substring(len);
+	}
+}
+
 export function activate(context: vscode.ExtensionContext) {
 
 	const html_path = path.join(context.extensionPath, "media", "main.html");
@@ -39,7 +59,8 @@ export function activate(context: vscode.ExtensionContext) {
 					// make insert img DOM string
 					let content: string = ""
 					file_names.forEach(name => {
-						const resource_path = vscode.Uri.parse(path.join(dir_path, name)).with({ scheme: 'vscode-resource' });
+						const uri = vscode.Uri.file(path.join(dir_path, name));
+						const resource_path = uri.with({ scheme: 'vscode-resource' });
 						content += `<div><img src="${resource_path}" title="${name}"/></div>`;
 					});
 
@@ -54,7 +75,7 @@ export function activate(context: vscode.ExtensionContext) {
 						panel.webview.onDidReceiveMessage(message => {
 							switch (message.command) {
 								case 'openImage':
-									const uri = vscode.Uri.parse(message.src, true).with({ scheme: 'file' })
+									const uri = vscode.Uri.file(get_clean_path(message.src)).with({ scheme: 'file' })
 									vscode.commands.executeCommand('vscode.open', uri, vscode.ViewColumn.Beside).then(
 										() => null,
 										() => "unable to open image."

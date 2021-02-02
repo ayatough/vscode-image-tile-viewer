@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [0.1.3] - 2021-02-02
+
+- Fix critical bug about displaying and opening image.
+
 ## [0.1.2] - 2020-05-27
 
 - Add compatible image formats.
