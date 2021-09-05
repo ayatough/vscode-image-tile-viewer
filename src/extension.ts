@@ -12,7 +12,7 @@ function get_clean_path(path: string) : string {
 	const parsed_path = vscode.Uri.parse(path, false).fsPath;  // remove "://"
 	const residue_pos = parsed_path.indexOf(residue_prefix);  // remove "/file/" here
 	const len = residue_prefix.length;
-	if (residue_pos != 0)
+	if (residue_pos !== 0)
 	{
 		return parsed_path;
 	}
@@ -24,59 +24,68 @@ function get_clean_path(path: string) : string {
 
 export function activate(context: vscode.ExtensionContext) {
 
-	const html_path = path.join(context.extensionPath, "media", "main.html");
-	const image_format_list = [".jpeg", ".jpg", ".jpe", ".png", ".bmp", ".gif", ".webp"]
+	const image_format_list = [".jpeg", ".jpg", ".jpe", ".png", ".bmp", ".gif", ".webp"];
 
-	let disposable = vscode.commands.registerCommand('image-tile-viewer.open', () => {
-		
-		vscode.window.showOpenDialog({
-			canSelectFolders: true,
-			defaultUri: vscode.workspace.workspaceFolders === undefined ? undefined : vscode.workspace.workspaceFolders[0].uri
-		}).then(dir_uri => {
-			if (dir_uri && dir_uri[0]) {
-				const dir_path = dir_uri[0].fsPath;
-				fs.readdir(dir_path, { withFileTypes: true }, (err, dirents) => {
-					if (err) {
-						console.log(err);
-						return;
-					}
+	let panel : vscode.WebviewPanel;
 
-					// create panel instance
-					const panel = vscode.window.createWebviewPanel('viewer', dir_path, {
-						viewColumn: vscode.ViewColumn.One,
-					}, {
-						localResourceRoots: [vscode.Uri.file(dir_path)],
-						enableScripts: true,
-						retainContextWhenHidden: true
-					});
-
-					// extract img files
-					let file_names: string[] = []
-					dirents.forEach((file: fs.Dirent) => {
-						if (image_format_list.includes(path.extname(file.name).toLocaleLowerCase())) file_names.push(file.name);
-					});
-
-					// make insert img DOM string
-					let content: string = ""
-					file_names.forEach(name => {
-						const uri = vscode.Uri.file(path.join(dir_path, name));
-						const resource_path = uri.with({ scheme: 'vscode-resource' });
-						content += `<div><img src="${resource_path}" title="${name}"/></div>`;
-					});
-
-					// read template html and view
-					fs.readFile(html_path, (err, data) => {
+	context.subscriptions.push(
+		vscode.commands.registerCommand('image-tile-viewer.open', () => {
+	
+			vscode.window.showOpenDialog({
+				canSelectFolders: true,
+				defaultUri: vscode.workspace.workspaceFolders === undefined ? undefined : vscode.workspace.workspaceFolders[0].uri
+			}).then(dir_uri => {
+				if (dir_uri && dir_uri[0]) {
+					const dir_path = dir_uri[0].fsPath;
+					fs.readdir(dir_path, { withFileTypes: true }, (err, dirents) => {
 						if (err) {
 							console.log(err);
 							return;
 						}
-						panel.webview.html = data.toString().replace("${content}", content);
 
+						console.log(dir_path);
+	
+						// create panel instance
+						panel = vscode.window.createWebviewPanel('viewer', dir_path, {
+							viewColumn: vscode.ViewColumn.One,
+						}, {
+							localResourceRoots: [
+								vscode.Uri.file(dir_path),
+								vscode.Uri.file(path.join(context.extensionPath, "frontend", "dist"))
+							],
+							enableScripts: true,
+							retainContextWhenHidden: true
+						});
+
+						panel.webview.html = getWebviewContent(context, panel.webview);
+
+						// extract img files
+						let file_names: string[] = [];
+						dirents.forEach((file: fs.Dirent) => {
+							if (image_format_list.includes(path.extname(file.name).toLocaleLowerCase())) {
+								file_names.push(file.name);
+							}
+						});
+	
+						// notify image resource info to JS
+						let data: any[] = [];
+						file_names.forEach(name => {
+							const uri = vscode.Uri.file(path.join(dir_path, name));
+							const relative_path = name;
+							const record = {
+								resource_path: panel.webview.asWebviewUri(uri).toString(),
+								relative_path: relative_path,
+							};
+							data.push(record);
+						});
+						panel.webview.postMessage({ command: 'sendResources', data: data });
+
+						// recieve click event on DOM
 						panel.webview.onDidReceiveMessage(message => {
 							switch (message.command) {
 								case 'openImage':
-									const uri = vscode.Uri.file(get_clean_path(message.src)).with({ scheme: 'file' })
-									vscode.commands.executeCommand('vscode.open', uri, vscode.ViewColumn.Beside).then(
+									const uri = vscode.Uri.file(get_clean_path(message.src)).with({ scheme: 'file' });
+									vscode.commands.executeCommand('vscode.open', uri, vscode.ViewColumn.Active).then(
 										() => null,
 										() => "unable to open image."
 									);
@@ -86,13 +95,41 @@ export function activate(context: vscode.ExtensionContext) {
 							context.subscriptions
 						);
 					});
-				});
+				}
+			});
+		})
+	);
 
-			}
-		});
-	});
+	context.subscriptions.push(
+		vscode.commands.registerCommand('image-tile-viewer.send', () => {
+			panel.webview.postMessage({ command: 'sendMessage' });
+		})
+	);
+}
 
-	context.subscriptions.push(disposable);
+function getWebviewContent(
+  context: vscode.ExtensionContext,
+  webview: vscode.Webview
+): string {
+  const scriptUri = webview.asWebviewUri(
+    vscode.Uri.file(
+      path.join(context.extensionPath, "frontend", "dist", "bundle.js")
+    )
+  );
+  return `<!DOCTYPE html>
+  <html>
+	<head>
+	  <meta charset="utf-8" />
+	  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+	  <link rel="icon" href="favicon.ico">
+	  <title>Vue app</title>
+	</head>
+	<body>
+	  <div id="app"></div>
+	  <script src=${scriptUri}></script>
+	</body>
+  </html>`;
 }
 
 export function deactivate() { }
