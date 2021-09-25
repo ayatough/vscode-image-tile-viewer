@@ -14,6 +14,12 @@ This is vscoded extension for showing images in tile view.
   - image size
   - number of columns
   - filter files by RegExp string
+  - gap btween each images
+  - display image style
+    - cover
+    - contain
+    - fill
+  - display image name
 
 ## Extension Commands
 
