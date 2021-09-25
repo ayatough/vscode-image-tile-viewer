@@ -57,6 +57,9 @@ export function activate(context: vscode.ExtensionContext) {
 							retainContextWhenHidden: true
 						});
 
+						// set icon
+						panel.iconPath = vscode.Uri.file(path.join(context.extensionPath, "media", "icon.svg"));
+
 						panel.webview.html = getWebviewContent(context, panel.webview);
 
 						// extract img files
@@ -123,7 +126,7 @@ function getWebviewContent(
 	  <meta http-equiv="X-UA-Compatible" content="IE=edge">
 	  <meta name="viewport" content="width=device-width,initial-scale=1.0">
 	  <link rel="icon" href="favicon.ico">
-	  <title>Vue app</title>
+	  <title>Image Tile Viewer</title>
 	</head>
 	<body>
 	  <div id="app"></div>
