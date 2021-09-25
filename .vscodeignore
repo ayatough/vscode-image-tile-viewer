@@ -10,3 +10,12 @@ vsc-extension-quickstart.md
 **/*.ts
 
 media/demo.gif
+*.sh
+Dockerfile
+debug/
+frontend/node_modules
+frontend/public
+frontend/src
+frontend/*
+frontend/dist/index.html
+frontend/dist/favicon.ico
