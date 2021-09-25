@@ -3,14 +3,16 @@
 	"displayName": "Image Tile Viewer",
 	"description": "extension for showing images in tile view.",
 	"icon": "media/icon.png",
-	"version": "0.1.3",
+	"version": "0.2.0",
 	"publisher": "ayatough",
 	"author": {
 		"name": "ayatough",
 		"email": "modest.simple.life@gmail.com"
 	},
 	"keywords": [
-		"image"
+		"image",
+		"tile",
+		"viewer"
 	],
 	"homepage": "https://github.com/ayatough/vscode-image-tile-viewer",
 	"repository": {
@@ -33,8 +35,9 @@
 	"contributes": {
 		"commands": [
 			{
+				"category": "Image Tile Viewer",
 				"command": "image-tile-viewer.open",
-				"title": "Image Tile Viewer | Open Diirectory"
+				"title": "Open Directory"
 			}
 		]
 	},
@@ -47,13 +50,13 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.44.0",
 		"@types/glob": "^7.1.1",
 		"@types/mocha": "^7.0.2",
 		"@types/node": "^13.11.0",
-		"eslint": "^6.8.0",
-		"@typescript-eslint/parser": "^2.26.0",
+		"@types/vscode": "^1.44.0",
 		"@typescript-eslint/eslint-plugin": "^2.26.0",
+		"@typescript-eslint/parser": "^2.26.0",
+		"eslint": "^6.8.0",
 		"glob": "^7.1.6",
 		"mocha": "^7.1.1",
 		"typescript": "^3.8.3",
