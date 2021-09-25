@@ -25,11 +25,11 @@ export default new Vuex.Store({
   state: {
     vscode: vscode,
     imageFiles: [],
-    imageGridNumCols: 2,
-    imageWidth: 150,
-    imageHeight: 150,
+    imageGridNumCols: 6,
+    imageWidth: 100,
+    imageHeight: 100,
     imageGridGap: 30,
-    imageFitStyle: "cover",
+    imageFitStyle: "contain",
     queryString: "",
     displayImageLabel: false,
     debug: {
