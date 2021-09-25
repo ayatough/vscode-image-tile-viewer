@@ -88,7 +88,7 @@ export function activate(context: vscode.ExtensionContext) {
 							switch (message.command) {
 								case 'openImage':
 									const uri = vscode.Uri.file(get_clean_path(message.src)).with({ scheme: 'file' });
-									vscode.commands.executeCommand('vscode.open', uri, vscode.ViewColumn.Active).then(
+									vscode.commands.executeCommand('vscode.open', uri, vscode.ViewColumn.Beside).then(
 										() => null,
 										() => "unable to open image."
 									);
