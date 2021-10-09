@@ -43,6 +43,9 @@
         :state="isQueryValid"
       ></b-form-input>
     </div>
+    <div id="reload-controller">
+      <b-icon icon="arrow-clockwise" v-on:click="reload" class="clickable"></b-icon>
+    </div>
   </div>
 </template>
 
@@ -93,6 +96,15 @@ export default {
       return null;
     },
   },
+  methods: {
+    reload: function () {
+      if (!this.$store.state.debug.mode) {
+        this.$store.state.vscode.postMessage({
+          command: "reload",
+        });
+      }
+    },
+  },
   filters: {
     spacePadding: function (value, space) {
       if (!value) return "";
@@ -106,7 +118,7 @@ export default {
 <style scoped>
 #controller {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr 1fr 30px;
   align-items: center;
   justify-content: stretch;
   justify-items: center;
