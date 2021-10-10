@@ -10,6 +10,7 @@ This is vscoded extension for showing images in tile view.
 
 - display images contained in directory in tile view
 - click on the image to view in side panel
+  - if you hold on shift-key, the image will open in a new tab
 - view option
   - image size
   - number of columns

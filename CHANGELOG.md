@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.1] - 2021-10-10
+
+- Add reload button
+- Add feature for behavior when opening image with shift-click
+
 ## [0.2.0] - 2021-09-25
 
 - Modify UI
