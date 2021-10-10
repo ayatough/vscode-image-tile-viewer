@@ -41,7 +41,7 @@ export default {
               name: message.data[i].relative_path,
               id: i,
             });
-            console.log(message.data[i]);
+            // console.log(message.data[i]);
           }
           this.imageFiles = imgs;
           break;
@@ -80,6 +80,10 @@ body {
   background-color: var(--vscode-editor-background);
   color: var(--vscode-editor-foreground);
   /* border: 1px solid red; */
+}
+
+.clickable {
+  cursor: pointer;
 }
 
 ::-webkit-scrollbar {
