@@ -5,7 +5,7 @@
         v-for="img in imageSelectedFiles"
         :key="img.id"
         class="grid_row"
-        v-on:click="openImage(img)"
+        v-on:click="openImage(img, $event)"
       >
         <b-img-lazy
           v-bind:src="img.src"
@@ -107,11 +107,12 @@ export default {
     },
   },
   methods: {
-    openImage: function (img) {
+    openImage: function (img, event) {
       if (!this.$store.state.debug.mode) {
         this.$store.state.vscode.postMessage({
           command: "openImage",
           src: img.src,
+          newTab: event.shiftKey,
         });
       }
     },
