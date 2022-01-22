@@ -119,13 +119,10 @@ class ImageTileViewer {
 			switch (message.command) {
 				case 'openImage':
 					{
-						// console.log(message.src);
-						// console.log(vscode.Uri.parse(message.src, false));
-						// console.log(vscode.Uri.parse(message.src, true));
-						
-						const uri = vscode.Uri.parse(message.src, false);
+						const uri = vscode.Uri.parse(message.src);
+						const fileUri = vscode.Uri.from({scheme: "file", authority: uri.authority, fragment: uri.fragment, path: uri.path, query: uri.query});
 						const columns = message.newTab ? vscode.ViewColumn.Active : vscode.ViewColumn.Beside; 
-						vscode.commands.executeCommand('vscode.open', uri, columns).then(
+						vscode.commands.executeCommand('vscode.open', fileUri, columns).then(
 							() => null,
 							() => "unable to open image."
 						);
