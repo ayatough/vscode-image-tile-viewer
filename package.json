@@ -37,7 +37,7 @@
 			{
 				"category": "Image Tile Viewer",
 				"command": "image-tile-viewer.open",
-				"title": "Open Directory"
+				"title": "Open Image Tile View"
 			}
 		],
 		"menus": {
