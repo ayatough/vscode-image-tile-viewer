@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
+import { resolve } from 'path';
 
 // const IS_WIN = process.platform === "win32";
 // const IS_MAC = process.platform === "darwin";
@@ -119,13 +120,10 @@ class ImageTileViewer {
 			switch (message.command) {
 				case 'openImage':
 					{
-						// console.log(message.src);
-						// console.log(vscode.Uri.parse(message.src, false));
-						// console.log(vscode.Uri.parse(message.src, true));
-						
-						const uri = vscode.Uri.parse(message.src, false);
+						const uri = vscode.Uri.parse(message.src);
+						const fileUri = vscode.Uri.from({scheme: "file", authority: uri.authority, fragment: uri.fragment, path: uri.path, query: uri.query});
 						const columns = message.newTab ? vscode.ViewColumn.Active : vscode.ViewColumn.Beside; 
-						vscode.commands.executeCommand('vscode.open', uri, columns).then(
+						vscode.commands.executeCommand('vscode.open', fileUri, columns).then(
 							() => null,
 							() => "unable to open image."
 						);
@@ -169,29 +167,67 @@ class ImageTileViewer {
 }
 
 
-function startView(context: vscode.ExtensionContext) {
-	vscode.window.showOpenDialog({
-		canSelectFolders: true,
-		defaultUri: vscode.workspace.workspaceFolders === undefined ? undefined : vscode.workspace.workspaceFolders[0].uri
-	}).then(dirUris => {
-		const exists = (uris: vscode.Uri[] | undefined) => uris !== undefined && uris[0] !== undefined;
-		if (dirUris !== undefined && dirUris?.length !== 0) {
-			const viewer = new ImageTileViewer(context, dirUris[0]);
-
-			viewer.makeView();
-			viewer.sendImageContents();
-			viewer.registerCommand();
+function initView(context: vscode.ExtensionContext, dirUri: vscode.Uri) {
+	const checkValidDirectory = async (uri: vscode.Uri) : Promise<void> => {
+		try {
+			const stat = await vscode.workspace.fs.stat(uri);
+			return new Promise((resolve, reject) => {
+				try {
+					switch (stat.type) {
+						case vscode.FileType.Directory:
+							resolve();
+						default:
+							throw Error(`Specified \`FileType\` is wrong.\nPlease specify \`FileType.Directory\`.`);
+					}
+				} catch(e) {
+					reject(e);
+				}
+			});
+		} catch(e) {
+			return new Promise((_, reject) => {
+				reject(e);
+			});
 		}
+	};
+
+	checkValidDirectory(dirUri).then(() => {
+		const viewer = new ImageTileViewer(context, dirUri);
+	
+		viewer.makeView();
+		viewer.sendImageContents();
+		viewer.registerCommand();
+	})
+	.catch(err => {
+		vscode.window.showErrorMessage(err.message);
 	});
 }
 
+
+function startView(context: vscode.ExtensionContext, path: string) {
+
+	if (path === undefined)
+	{
+		vscode.window.showOpenDialog({
+			canSelectFolders: true,
+			defaultUri: vscode.workspace.workspaceFolders === undefined ? undefined : vscode.workspace.workspaceFolders[0].uri
+		}).then(dirUris => {
+			if (dirUris !== undefined && dirUris?.length !== 0) {
+				const dirUri = dirUris[0];
+				initView(context, dirUri);
+			}
+		});
+	}
+	else
+	{
+		const dirUri = vscode.Uri.parse(path);
+		initView(context, dirUri);
+	}
+}
+
 export function activate(context: vscode.ExtensionContext) {
-
-	// const manager = new ImageTileManager(context.extensionUri);
-
 	context.subscriptions.push(
-		vscode.commands.registerCommand('image-tile-viewer.open', () => {
-			startView(context);
+		vscode.commands.registerCommand('image-tile-viewer.open', (path) => {
+			startView(context, path);
 		})
 	);
 }
