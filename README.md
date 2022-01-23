@@ -21,6 +21,10 @@ This is vscoded extension for showing images in tile view.
     - contain
     - fill
   - display image name
+- launch command
+  - from command pallette
+  - right click on explorer context view
+  - vscode task (see usage: [#32](https://github.com/ayatough/vscode-image-tile-viewer/pull/32))
 
 ## Extension Commands
 

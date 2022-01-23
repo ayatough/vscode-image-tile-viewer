@@ -1,6 +1,9 @@
 # Change Log
 
-## [Unreleased]
+## [0.2.2] - 2022-01-23
+
+- Fix bug failing to open single image view via image tile viewer. [#30](https://github.com/ayatough/vscode-image-tile-viewer/pull/30)
+- Add feature for launching command by task args and by right clicking on explorer context view. [#32](https://github.com/ayatough/vscode-image-tile-viewer/pull/32)
 
 ## [0.2.1] - 2021-10-10
 
