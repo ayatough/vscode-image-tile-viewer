@@ -3,7 +3,7 @@
 	"displayName": "Image Tile Viewer",
 	"description": "extension for showing images in tile view.",
 	"icon": "media/icon.png",
-	"version": "0.2.2-alpha.0",
+	"version": "0.2.2-alpha.1",
 	"publisher": "ayatough",
 	"author": {
 		"name": "ayatough",
@@ -37,9 +37,17 @@
 			{
 				"category": "Image Tile Viewer",
 				"command": "image-tile-viewer.open",
-				"title": "Open Directory"
+				"title": "Open Image Tile View"
 			}
-		]
+		],
+		"menus": {
+			"explorer/context": [
+				{
+					"when": "explorerResourceIsFolder",
+					"command": "image-tile-viewer.open"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
