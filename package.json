@@ -39,7 +39,15 @@
 				"command": "image-tile-viewer.open",
 				"title": "Open Directory"
 			}
-		]
+		],
+		"menus": {
+			"explorer/context": [
+				{
+					"when": "explorerResourceIsFolder",
+					"command": "image-tile-viewer.open"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
