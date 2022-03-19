@@ -121,7 +121,7 @@ class ImageTileViewer {
 				case 'openImage':
 					{
 						const uri = vscode.Uri.parse(message.src);
-						const fileUri = vscode.Uri.from({scheme: "file", authority: uri.authority, fragment: uri.fragment, path: uri.path, query: uri.query});
+						const fileUri = vscode.Uri.from({scheme: "file", fragment: uri.fragment, path: uri.path, query: uri.query});
 						const columns = message.newTab ? vscode.ViewColumn.Active : vscode.ViewColumn.Beside; 
 						vscode.commands.executeCommand('vscode.open', fileUri, columns).then(
 							() => null,
