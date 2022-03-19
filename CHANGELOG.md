@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.2.3] - 2022-03-20
+
+- Fix bug that an image cannot load properly when clicking on an image in tile view on windows native vscode. [#38](https://github.com/ayatough/vscode-image-tile-viewer/pull/38)
+
 ## [0.2.2] - 2022-01-23
 
 - Fix bug failing to open single image view via image tile viewer. [#30](https://github.com/ayatough/vscode-image-tile-viewer/pull/30)
